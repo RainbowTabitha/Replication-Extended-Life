@@ -43,7 +43,10 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,6 +77,11 @@ public class Replication extends ModuleController {
         NetworkRegistry.INSTANCE.addFactory(MatterNetwork.MATTER, new MatterNetwork.Factory());
         NetworkElementRegistry.INSTANCE.addFactory(DefaultMatterNetworkElement.ID, new DefaultMatterNetworkElement.Factory());
         NBTManager.getInstance().scanTileClassForAnnotations(MatterPipeBlockEntity.class);
+        if (ModList.get().isLoaded("darkmodeeverywhere")) {
+            EventManager.mod(InterModEnqueueEvent.class).process(interModEnqueueEvent -> {
+                InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "com.buuz135.replication");
+            }).subscribe();
+        }
     }
 
     @Override

@@ -129,6 +129,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.20.1-47.0.19'
 
+    implementation fg.deobf("curse.maven:jade-324717:5072729")
+    runtimeOnly fg.deobf("curse.maven:dark-mode-everywhere-574123:5922792")
 
     if (findProject(':titanium') != null) {
         implementation project(':titanium')
@@ -139,10 +141,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:15.2.0.23")
     // at runtime, use the full JEI jar for Forge
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.1.0.19")
-
-
-    implementation fg.deobf("curse.maven:jade-324717:5072729")
-    //runtimeOnly fg.deobf("curse.maven:world-stripper-250603:4578579")
+    compileOnly "curse.maven:the-one-probe-245211:5159287"
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
