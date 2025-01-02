@@ -104,15 +104,22 @@ public class ReplicationCalculation {
                         cachedSyncTag.put(rl.toString() , compound.serializeNBT());
                         ++amount;
                     }
-                }
-                for (Item item : BuiltInRegistries.ITEM) {
-                    var rl = BuiltInRegistries.ITEM.getKey(item);
-                    if (rl.getNamespace().equals("minecraft")) continue;
-                    var compound = getMatterCompound(new ItemStack(item), 0, new ArrayList<>(), false);
-                    if (compound != null && !compound.getValues().isEmpty()) {
-                        if (false) CALCULATOR_LOG.info(rl.toString() + " -> " + compound.toString());
-                        cachedSyncTag.put(rl.toString() , compound.serializeNBT());
-                        ++amount;
+                    try {
+                        var stack = item.getDefaultInstance();
+                        //if (InvUtil.hasExtraComponents(stack)) continue;
+                        var rl = getNameFromStack(stack);
+                        if (!DEFAULT_MATTER_COMPOUND.containsKey(rl) && !SORTED_CALCULATION_REFERENCE.containsKey(rl)) {
+                            continue;
+                        }
+                        var compound = getMatterCompound(stack, 0, new ArrayList<>(), new ArrayList<>(), false);
+                        // CALCULATOR_LOG.info("---------------------------------------------");
+                        if (compound != null && !compound.getValues().isEmpty()) {
+                            if (false) CALCULATOR_LOG.info(rl + " -> " + compound.toString());
+                            tempTag.put(rl, compound.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()));
+                            ++amount;
+                        }
+                    } catch (Exception e) {
+                        CALCULATOR_LOG.info("Failed to calculate " + item, e);
                     }
                 }
                 CALCULATOR_LOG.info("Resolved " + amount + " values in " + (System.currentTimeMillis() - time) + "ms");
