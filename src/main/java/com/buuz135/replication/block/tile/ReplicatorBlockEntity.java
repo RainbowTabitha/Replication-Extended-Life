@@ -183,10 +183,12 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         if (craftingTask != null && getEnergyStorage().getEnergyStored() > ReplicationConfig.Replicator.POWER_TICK && cachedReplicationTask != null
                 && cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
             if (this.action == 0){
-                if (this.progress >= ReplicationConfig.Replicator.MAX_PROGRESS && ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()){
-                    this.action = 1;
-                    syncObject(this.action);
-                    replicateItem();
+                if (this.progress >= ReplicationConfig.Replicator.MAX_PROGRESS) {
+                    if (ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()) {
+                        this.action = 1;
+                        syncObject(this.action);
+                        replicateItem();
+                    }
                 } else {
                     getEnergyStorage().extractEnergy(ReplicationConfig.Replicator.POWER_TICK, false);
                     ++this.progress;
